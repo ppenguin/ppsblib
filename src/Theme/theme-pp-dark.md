@@ -60,7 +60,7 @@ html {
 }
 .sb-line-h2 {
   font-size: 1.6em !important;
-  color: #6a5acd !important;
+  color: #7a6acd !important;
 }
 .sb-line-h3 {
    font-size: 1.4em !important;
@@ -68,7 +68,7 @@ html {
 }
 .sb-line-h4 {
   font-size: 1.2em !important;
-  color: #008000 !important;
+  color: #00c000 !important;
 }
 .sb-line-h5 {
   font-size: 1em !important;
