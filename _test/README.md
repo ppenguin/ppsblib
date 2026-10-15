@@ -35,10 +35,10 @@ rebuild and copy it, then run **Sync: Now** and **Plugs: Reload** in the
 client. No Git push or Library refresh is needed for this local copy.
 
 The `Repositories/ppenguin.md` page is also in the Space so the repository
-appears in Library UI. Its remote entries still point to GitHub `main` for
-published installs. Do not use the remote **Install** action to test an
-unpublished SilverInk build: it would fetch the GitHub version instead of
-the already installed local bundle.
+appears in Library UI. On this development branch, its remote entries point
+to GitHub `silverink`. To test the just-built local bundle, use the installed
+local library rather than the remote **Install** action, which fetches the
+pushed GitHub version.
 
 QuickAccess is installed as a local Space Lua library. After changing its
 page, rerun `make -C _test start`, then run **Sync: Now** and
