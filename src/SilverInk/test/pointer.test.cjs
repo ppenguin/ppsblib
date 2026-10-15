@@ -115,9 +115,12 @@ async function panel(selection = { from: 8, to: 8, text: "" }, options = {}) {
         return;
       }
       if (name === "editor.save") { if (onSave) onSave(); return; }
-      if (name === "sandboxFetch.fetch") return options.ocrResponse || {
-        status: 200, base64Body: btoa(JSON.stringify({ response: "Handwritten words", done: true })),
-      };
+      if (name === "sandboxFetch.fetch") {
+        if (options.ocrError) throw options.ocrError;
+        return options.ocrResponse || {
+          status: 200, base64Body: btoa(JSON.stringify({ response: "Handwritten words", done: true })),
+        };
+      }
       if (name === "editor.hidePanel") { hideCalls++; return; }
       if (name === "editor.focus") return;
       throw Error(`Unexpected syscall: ${name}`);
@@ -352,6 +355,19 @@ test("an OCR failure leaves the page and strokes untouched", async () => {
   ui.window.emit("pointerup", ui.pointer(1, 10, 10));
   await ui.elements.review.onclick();
   await blockButton(ui, 0, "Transcribe").onclick();
+  assert.equal(ui.pageText(), "# Notes\n");
+  assert.equal(ui.saved().strokes.length, 1);
+  assert.equal(ui.hideCalls(), 0);
+});
+
+test("a proxy permission failure identifies the SilverBullet route and keeps the capture", async () => {
+  const ui = await panel(undefined, { ocrError: new Error("You do not have permission to do that") });
+  ui.canvas.emit("pointerdown", ui.pointer(1, 10, 10));
+  ui.window.emit("pointerup", ui.pointer(1, 10, 10));
+  await ui.elements.review.onclick();
+  await blockButton(ui, 0, "Transcribe").onclick();
+  assert.match(ui.elements.status.textContent, /SilverBullet refused the OCR proxy request/);
+  assert.match(ui.elements.status.textContent, /\/\.proxy\//);
   assert.equal(ui.pageText(), "# Notes\n");
   assert.equal(ui.saved().strokes.length, 1);
   assert.equal(ui.hideCalls(), 0);

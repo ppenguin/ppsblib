@@ -223,6 +223,16 @@
   function ocrSettings() {
     return silverInkContext.ocr;
   }
+  async function ocrRequest(url, options) {
+    try { return await syscall("sandboxFetch.fetch", url, options); }
+    catch (e) {
+      if (e?.name === "PermissionDeniedError" ||
+          /you do not have permission to do that/i.test(String(e?.message || e))) {
+        throw new Error("SilverBullet refused the OCR proxy request. Check this account's Write access and whether the server or reverse proxy allows /.proxy/ requests.");
+      }
+      throw e;
+    }
+  }
   $("ocr-config").textContent = `OCR: ${ocrSettings().model} at ${ocrSettings().endpoint} · configure in CONFIG`;
   $("ocr-check").onclick = async () => {
     if (ocrBusy) return;
@@ -231,8 +241,7 @@
     if (review) renderReview();
     try {
       say(`Checking ${ocrSettings().model}…`);
-      say(await OCR.check(ocrSettings().provider, ocrSettings(), (url, options) =>
-        syscall("sandboxFetch.fetch", url, options)));
+      say(await OCR.check(ocrSettings().provider, ocrSettings(), ocrRequest));
     } catch (e) { say(`Provider check failed: ${e.message || e}`, true); }
     finally { ocrBusy = false; $("ocr-check").disabled = false; if (review) renderReview(); }
   };
@@ -385,7 +394,7 @@
       say(`Transcribing saved block with ${ocrSettings().model}…`);
       const image = await pngStrokes(doc, doc.strokes.map(stroke => stroke.id), 8);
       const transcription = await OCR.recognize(ocrSettings().provider,
-        { ...ocrSettings(), image }, (url, options) => syscall("sandboxFetch.fetch", url, options));
+        { ...ocrSettings(), image }, ocrRequest);
       await assertEditorUnchanged();
       const currentRecordText = new TextDecoder().decode(await remote.readFile(blockEdit.recordPath));
       if (currentRecordText !== blockEdit.recordText) {
@@ -762,7 +771,7 @@
       say(`Transcribing block ${index + 1} with ${ocrSettings().model}…`);
       const image = await pngStrokes(doc, block.strokeIds, 8);
       const transcription = await OCR.recognize(ocrSettings().provider,
-        { ...ocrSettings(), image }, (url, options) => syscall("sandboxFetch.fetch", url, options));
+        { ...ocrSettings(), image }, ocrRequest);
       if (doc.id !== sessionId || doc.revision !== revision || review.blocks[index]?.id !== blockId) {
         throw new Error("The block changed while transcription was running");
       }

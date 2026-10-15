@@ -207,6 +207,14 @@ page unchanged. The OCR result is inserted as plain, escaped Markdown; edit
 any recognition mistakes directly in the page. This PoC has been tested with a mocked Ollama response, not
 against a live model or iPad.
 
+If **Check OCR provider** or **Transcribe** says SilverBullet refused the OCR
+proxy request, inspect the browser's Network tab for the `/.proxy/` request.
+SilverBullet requires **Write** access to that route, including the model-list
+check. If ordinary page saves succeed with the same account, check the server
+or reverse proxy for a blocked `/.proxy/` path, and check that the browser is
+using the same origin as the SilverBullet server. This error occurs before an
+Ollama response is read; changing the Ollama model will not resolve it.
+
 ## Edit an existing block
 
 Place the cursor in a SilverInk block in the Markdown page and run
