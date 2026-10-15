@@ -1,0 +1,4 @@
+node_modules/
+.devenv/
+.direnv/
+silverink.plug.js.map

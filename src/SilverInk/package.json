@@ -1,0 +1,16 @@
+{
+  "name": "silverink",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "plug-compile silverink.plug.yaml",
+    "check": "tsc --noEmit",
+    "test": "node --test test/*.test.cjs"
+  },
+  "dependencies": {
+    "@silverbulletmd/silverbullet": "2.12.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

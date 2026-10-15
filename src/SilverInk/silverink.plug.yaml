@@ -1,0 +1,29 @@
+name: silverink
+assets:
+  - "ui/*.html"
+  - "ui/*.js"
+functions:
+  handwrite:
+    path: "./silverink.ts:handwrite"
+    command:
+      name: "SilverInk: New handwritten"
+      requireMode: rw
+      requireEditor: page
+  editBlock:
+    path: "./silverink.ts:editBlock"
+    command:
+      name: "SilverInk: Edit handwritten"
+      requireMode: rw
+      requireEditor: page
+  deleteBlock:
+    path: "./silverink.ts:deleteBlock"
+    command:
+      name: "SilverInk: Delete selected block"
+      requireMode: rw
+      requireEditor: page
+  cleanBlocks:
+    path: "./silverink.ts:cleanBlocks"
+    command:
+      name: "SilverInk: Clean orphaned blocks"
+      requireMode: rw
+      requireEditor: page

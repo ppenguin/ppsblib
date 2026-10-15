@@ -1,0 +1,12 @@
+name: silverink-test
+
+services:
+  silverbullet:
+    image: ghcr.io/silverbulletmd/silverbullet:2.12.0
+    environment:
+      SB_USER: ${SILVERBULLET_TEST_AUTH:?Run make -C _test start to create local credentials}
+      SB_HOSTNAME: 0.0.0.0
+    ports:
+      - "0.0.0.0:${SILVERBULLET_TEST_PORT:-3001}:3000"
+    volumes:
+      - ./testspace:/data
